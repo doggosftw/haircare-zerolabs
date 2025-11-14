@@ -1,0 +1,1803 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Seekho Junior Insight & Action Dashboard</title>
+        <style>
+            :root {
+                --bg: #0c0908;
+                --card: #fdf8f3;
+                --panel: #f4ece4;
+                --ink: #1f120d;
+                --muted: #6f615a;
+                --accent: #c0652a;
+                --accent-2: #e3c2a2;
+                --accent-3: #5d8f82;
+                --accent-4: #a5dac7;
+                --border: #1f120d;
+                --shadow: 12px 12px 0 rgba(10, 6, 4, 0.25);
+                font-family:
+                    "Space Grotesk",
+                    "Inter",
+                    "Segoe UI",
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    sans-serif;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+                background: radial-gradient(
+                        circle at 20% 20%,
+                        rgba(192, 101, 42, 0.08),
+                        transparent 45%
+                    ),
+                    radial-gradient(
+                        circle at 80% 0%,
+                        rgba(90, 143, 130, 0.1),
+                        transparent 40%
+                    ),
+                    var(--bg);
+                color: var(--ink);
+                line-height: 1.45;
+            }
+            a {
+                color: var(--accent-3);
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+            header.hero {
+                background: linear-gradient(
+                        135deg,
+                        rgba(192, 101, 42, 0.95),
+                        rgba(90, 143, 130, 0.9)
+                    ),
+                    var(--accent);
+                color: #0e0603;
+                padding: 64px 8vw 48px;
+                border-bottom: 6px solid var(--border);
+                position: relative;
+                overflow: hidden;
+            }
+            header.hero::after {
+                content: "";
+                position: absolute;
+                inset: 24px;
+                border: 3px dashed rgba(255, 255, 255, 0.35);
+                border-radius: 24px;
+                pointer-events: none;
+            }
+            header.hero h1 {
+                margin: 0 0 12px;
+                font-size: clamp(32px, 4vw, 54px);
+                letter-spacing: -0.02em;
+            }
+            header.hero p {
+                max-width: 720px;
+                margin: 0;
+                font-size: 18px;
+            }
+            .hero-kpis {
+                margin-top: 32px;
+                display: grid;
+                gap: 18px;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            }
+            .kpi-card {
+                background: var(--card);
+                color: var(--ink);
+                padding: 18px;
+                border: 3px solid var(--border);
+                border-radius: 18px;
+                box-shadow: var(--shadow);
+                min-height: 140px;
+            }
+            .kpi-card h3 {
+                margin: 0;
+                font-size: 15px;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                color: var(--muted);
+            }
+            .kpi-card strong {
+                display: block;
+                font-size: 36px;
+                margin-top: 8px;
+            }
+            nav.section-nav {
+                position: sticky;
+                top: 0;
+                background: rgba(253, 248, 243, 0.92);
+                backdrop-filter: blur(6px);
+                border-bottom: 3px solid var(--border);
+                z-index: 10;
+                padding: 6px 8vw;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            nav.section-nav a {
+                padding: 8px 16px;
+                border: 2px solid var(--border);
+                border-radius: 999px;
+                background: #fff;
+                font-weight: 600;
+                color: var(--ink);
+            }
+            nav.section-nav a:hover {
+                background: var(--accent-2);
+                color: var(--ink);
+            }
+            main {
+                padding: 40px 8vw 80px;
+                display: flex;
+                flex-direction: column;
+                gap: 60px;
+            }
+            section {
+                background: var(--card);
+                border: 3px solid var(--border);
+                border-radius: 24px;
+                padding: 32px;
+                box-shadow: var(--shadow);
+            }
+            section h2 {
+                margin: 0 0 6px;
+                font-size: 28px;
+                letter-spacing: -0.01em;
+            }
+            section p.lead {
+                margin: 0 0 20px;
+                color: var(--muted);
+            }
+            .segment-controls,
+            .question-controls,
+            .persona-filter-row,
+            .metric-controls {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin: 16px 0;
+            }
+            button.chip {
+                border: 2px solid var(--border);
+                background: #fff;
+                border-radius: 999px;
+                padding: 8px 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.2s;
+            }
+            button.chip.active {
+                background: var(--accent-4);
+                color: var(--ink);
+            }
+            .bars {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            .bar-row {
+                background: #f4ece4;
+                border: 2px solid var(--border);
+                border-radius: 14px;
+                overflow: hidden;
+                position: relative;
+                min-height: 44px;
+            }
+            .bar-fill {
+                height: 100%;
+                display: flex;
+                align-items: center;
+                padding: 6px 14px;
+                font-weight: 700;
+                color: #000;
+                background: linear-gradient(
+                    90deg,
+                    var(--accent-2),
+                    var(--accent)
+                );
+            }
+            .bar-label {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                padding: 0 14px;
+                font-size: 14px;
+                pointer-events: none;
+            }
+            .persona-list {
+                margin-top: 20px;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                gap: 16px;
+            }
+            .persona-card {
+                border: 2px solid var(--border);
+                border-radius: 18px;
+                padding: 16px;
+                background: #fff4e4;
+                min-height: 220px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .persona-card h4 {
+                margin: 0;
+                font-size: 16px;
+            }
+            .persona-card small {
+                color: var(--muted);
+            }
+            .persona-card ul {
+                padding-left: 18px;
+                margin: 0;
+                font-size: 13px;
+            }
+            .question-layout {
+                display: grid;
+                grid-template-columns: 260px 1fr;
+                gap: 24px;
+            }
+            .question-list {
+                border: 2px solid var(--border);
+                border-radius: 18px;
+                background: #fff;
+                max-height: 520px;
+                overflow-y: auto;
+            }
+            .question-list button {
+                width: 100%;
+                text-align: left;
+                padding: 12px 16px;
+                border: 0;
+                border-bottom: 1px solid #e2dfd2;
+                background: none;
+                cursor: pointer;
+            }
+            .question-list button.active {
+                background: var(--accent-3);
+                color: #fff;
+            }
+            .question-content {
+                border: 2px solid var(--border);
+                border-radius: 18px;
+                padding: 20px;
+                background: #fefaf3;
+            }
+            .question-meta {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                font-size: 13px;
+                color: var(--muted);
+                margin-bottom: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+            }
+            .metric-grid {
+                display: grid;
+                gap: 16px;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            }
+            .metric-card {
+                border: 2px solid var(--border);
+                border-radius: 18px;
+                padding: 16px;
+                cursor: pointer;
+                background: #fff;
+                min-height: 150px;
+            }
+            .metric-card.active {
+                background: #e1fff4;
+                border-color: var(--accent-4);
+            }
+            .metric-detail {
+                margin-top: 20px;
+                border: 2px solid var(--border);
+                border-radius: 18px;
+                padding: 18px;
+                background: #fff;
+            }
+            .insight-tabs,
+            .stat-tabs,
+            .visual-tabs {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                margin-bottom: 16px;
+            }
+            .insight-cards,
+            .stat-cards {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                gap: 16px;
+            }
+            .visual-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+            .insight-card,
+            .stat-card,
+            .visual-card {
+                border: 2px solid var(--border);
+                border-radius: 18px;
+                padding: 16px;
+                background: #fff;
+                position: relative;
+            }
+            .insight-card h4,
+            .stat-card h4 {
+                margin: 0 0 10px;
+                font-size: 16px;
+            }
+            .stat-card-actions {
+                margin-top: 10px;
+                font-size: 13px;
+            }
+            .insight-card p,
+            .stat-card ul {
+                margin: 0 0 10px;
+                font-size: 14px;
+            }
+            .stat-card ul {
+                padding-left: 18px;
+            }
+            .visual-card {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            .visual-card-content {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            .heatmap-row {
+                border: 2px solid var(--border);
+                border-radius: 14px;
+                padding: 14px;
+                background: #fff6ec;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .heatmap-row-label {
+                font-weight: 700;
+                font-size: 15px;
+            }
+            .heatmap-bars {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .heatmap-bar {
+                position: relative;
+                flex: 1 1 160px;
+                min-width: 140px;
+                border: 2px solid var(--border);
+                border-radius: 12px;
+                background: #f4ece4;
+                padding: 8px 10px;
+                overflow: hidden;
+            }
+            .heatmap-bar::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(
+                    90deg,
+                    rgba(77, 150, 255, 0.45),
+                    rgba(60, 200, 160, 0.45)
+                );
+                width: var(--value, 0%);
+                border-radius: inherit;
+                z-index: 0;
+            }
+            .heatmap-bar-label {
+                position: relative;
+                z-index: 1;
+                font-size: 12px;
+                font-weight: 600;
+                color: #222;
+            }
+            .playbook-tabs {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-bottom: 16px;
+            }
+            .playbook-view {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+            .playbook-summary-card {
+                border: 3px solid var(--border);
+                border-radius: 20px;
+                padding: 20px;
+                background: #fff;
+                box-shadow: var(--shadow);
+            }
+            .playbook-summary-card h3 {
+                margin: 0 0 8px;
+            }
+            .playbook-stat-list {
+                margin: 12px 0 0;
+                padding-left: 18px;
+            }
+            .playbook-segments {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 16px;
+            }
+            .playbook-segment-card {
+            .playbook-segment-card {
+                border: 2px solid var(--border);
+                border-radius: 18px;
+                padding: 18px;
+                background: #fff;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            .playbook-meta {
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: var(--muted);
+            }
+            .playbook-insight {
+                margin: 0;
+                font-weight: 600;
+                font-size: 15px;
+            }
+            .playbook-field-groups {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .playbook-field-group {
+                border: 2px dashed var(--border);
+                border-radius: 14px;
+                padding: 10px 14px;
+                background: #fff6ec;
+            }
+            .playbook-field-group h5 {
+                margin: 0 0 6px;
+                font-size: 13px;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: var(--muted);
+            }
+            .playbook-field-row + .playbook-field-row {
+                margin-top: 6px;
+            }
+            .playbook-field-row strong {
+                display: block;
+                font-size: 12px;
+                color: var(--muted);
+                letter-spacing: 0.04em;
+            }
+            .playbook-field-row span {
+                display: block;
+                font-size: 14px;
+            }
+            .leadership-extras {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                gap: 18px;
+            }
+            .markdown-scroll h2,
+            .markdown-scroll h3,
+            .markdown-scroll h4 {
+                margin-top: 18px;
+            }
+            .markdown-snippet {
+                border: 2px solid rgba(31, 18, 13, 0.15);
+                border-radius: 16px;
+                padding: 12px 16px;
+                background: #fff;
+                margin-bottom: 14px;
+            }
+            .markdown-snippet h4 {
+                margin: 0 0 8px;
+                font-size: 15px;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                color: var(--muted);
+            }
+            @media (max-width: 960px) {
+                .question-layout {
+                    grid-template-columns: 1fr;
+                }
+                nav.section-nav {
+                    position: static;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header class="hero">
+            <h1>&Done Haircare GTM Insight Hub</h1>
+            <p>User research insights and action plan for &Done</p>
+            <div class="hero-kpis" id="hero-kpis"></div>
+        </header>
+
+        <nav class="section-nav">
+            <a href="#people">People & Segments</a>
+            <a href="#questions">Question Navigator</a>
+            <a href="#metrics">Response Metrics</a>
+            <a href="#insights">Insight Hub</a>
+            <a href="#stats">Stat Deep Dive</a>
+            <a href="#gallery">Visual Gallery</a>
+            <a href="#playbooks">Playbooks</a>
+        </nav>
+
+        <main>
+            <section id="people">
+                <h2>People & Segments Explorer</h2>
+                <p class="lead">Track the 1,000 respondants in detail</p>
+                <div class="segment-controls" id="segment-controls"></div>
+                <div class="bars" id="segment-bars"></div>
+
+                <div class="persona-filter-row">
+                    <input
+                        type="search"
+                        id="persona-search"
+                        placeholder="Search persona summary..."
+                    />
+                    <select id="persona-city"></select>
+                    <select id="persona-income"></select>
+                    <select id="persona-gender"></select>
+                </div>
+                <div class="persona-list" id="persona-list"></div>
+            </section>
+
+            <section id="questions">
+                <h2>Question Navigator (Q1–Q34)</h2>
+                <p class="lead">
+                    Choose any question (from the list on left) to view the
+                    responses.
+                </p>
+                <div class="question-controls">
+                    <label
+                        >Segment lens:
+                        <select id="question-segment">
+                            <option value="overall">Overall sample</option>
+                            <option value="city_tier">City tier</option>
+                            <option value="bucket_income_annual">
+                                Income bucket
+                            </option>
+                            <option value="consumption_tier">
+                                Consumption tier
+                            </option>
+                            <option value="age_cohort">Age cohort</option>
+                            <option value="gender_identity">
+                                Gender identity
+                            </option>
+                        </select>
+                    </label>
+                    <label id="segment-value-label" style="display: none"
+                        >Segment value:
+                        <select id="question-segment-value"></select>
+                    </label>
+                </div>
+                <div class="question-layout">
+                    <div class="question-list" id="question-list"></div>
+                    <div class="question-content">
+                        <div class="question-meta" id="question-meta"></div>
+                        <div class="bars" id="question-bars"></div>
+                        <small id="question-footnote"></small>
+                    </div>
+                </div>
+            </section>
+
+            <section id="metrics">
+                <h2>Response Analysis & Derived Metrics</h2>
+                <p class="lead">
+                    Composite indicators derived from response analysis. Click a
+                    card to inspect leading city tiers (see more details in the
+                    bottom card).
+                </p>
+                <div class="metric-grid" id="metric-grid"></div>
+                <div class="metric-detail" id="metric-detail">
+                    <strong>Select a metric</strong>
+                    <p>Metric explanations and leaders will appear here.</p>
+                </div>
+            </section>
+
+            <section id="insights">
+                <h2>Insight & Action Hub</h2>
+                <p class="lead">Deeper insights mined from user responses.</p>
+                <div class="insight-tabs" id="insight-tabs"></div>
+                <div class="insight-cards" id="insight-cards"></div>
+            </section>
+
+            <section id="stats">
+                <h2>Statistical Deep Dive</h2>
+                <p class="lead">
+                    Significance-backed hooks from chi-square (categorical) and
+                    ANOVA/Kruskal (continuous) tests, translated into plain
+                    English.
+                </p>
+                <div class="stat-tabs">
+                    <button class="chip active" data-stat="chi">
+                        Chi-square
+                    </button>
+                    <button class="chip" data-stat="anova">
+                        ANOVA & Kruskal
+                    </button>
+                </div>
+                <div id="stat-content"></div>
+            </section>
+
+            <section id="gallery">
+                <h2>Visual Gallery & Heatmaps</h2>
+                <p class="lead">Explore the most important segment heatmaps.</p>
+                <div class="visual-tabs" id="visual-tabs"></div>
+                <div class="visual-grid" id="visual-grid"></div>
+            </section>
+
+            <section id="playbooks">
+                <h2>Playbook Action Board</h2>
+                <p class="lead">
+                    Choose any playbook to see the ready-to-run segment briefs,
+                    levers, and activation concepts.
+                </p>
+                <div class="playbook-tabs" id="playbook-tabs"></div>
+                <div class="playbook-view" id="playbook-view"></div>
+            </section>
+        </main>
+
+        <script src="assets/dashboard_data.js"></script>
+        <script>
+            const DATA = window.SEEKHO_DASHBOARD_DATA;
+
+            const $ = (selector) => document.querySelector(selector);
+            const $$ = (selector) => document.querySelectorAll(selector);
+
+            const formatPercent = (value) =>
+                value !== undefined
+                    ? value.toFixed(1).replace(/\\.0$/, "") + "%"
+                    : "–";
+            const formatNumber = (value) => value.toLocaleString();
+            const capitalizeWords = (text = "") =>
+                text
+                    .split(/[\s_]+/)
+                    .filter(Boolean)
+                    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+                    .join(" ");
+            const formatCurrency = (value) => {
+                const numeric = Number(value);
+                if (Number.isNaN(numeric)) return "–";
+                return `₹${Math.round(numeric).toLocaleString("en-IN")}`;
+            };
+            const inlineMarkdown = (text = "") =>
+                text
+                    .replace(/`([^`]+)`/g, "<code>$1</code>")
+                    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+                    .replace(/\*(.+?)\*/g, "<em>$1</em>");
+            const formatHeatmapColumnLabel = (text = "") =>
+                capitalizeWords(
+                    text
+                        .replace(/^q[0-9]+__/, "")
+                        .replace(/__/g, " ")
+                        .replace(/_/g, " "),
+                );
+            const formatHeatmapRowLabel = (label = "") => {
+                if (!label) return "–";
+                if (/^india_/i.test(label)) {
+                    return label
+                        .replace(/^india_/i, "India ")
+                        .replace(/_/g, " ")
+                        .replace(/\b(\w)/g, (m) => m.toUpperCase());
+                }
+                return capitalizeWords(label.replace(/_/g, " "));
+            };
+            const stripReferences = (text = "") =>
+                text
+                    .replace(/\[[^\]]+\]/g, "")
+                    .replace(/\s{2,}/g, " ")
+                    .trim();
+            const formatSegmentLabel = (dimension, value) => {
+                if (!value) return "–";
+                if (dimension === "gender_identity") {
+                    return capitalizeWords(value);
+                }
+                if (dimension === "city_tier") {
+                    return value.toUpperCase();
+                }
+                return value.replace(/_/g, " ");
+            };
+
+            function renderHero() {
+                const container = document.getElementById("hero-kpis");
+                const avgSpend = DATA.meta.avg_haircare_spend;
+                const washCadence = DATA.meta.avg_wash_cadence;
+                const heroCards = [
+                    {
+                        label: "Total respondents",
+                        value: formatNumber(DATA.meta.respondent_count),
+                        caption: "People who responded to the survey",
+                    },
+                    {
+                        label: "Avg monthly spend",
+                        value:
+                            avgSpend || avgSpend === 0
+                                ? formatCurrency(avgSpend)
+                                : "–",
+                        caption: "Self-reported monthly haircare outlay.",
+                    },
+                    {
+                        label: "Wash cadence",
+                        value:
+                            washCadence || washCadence === 0
+                                ? `${washCadence
+                                      .toFixed(1)
+                                      .replace(/\.0$/, "")} sessions/week`
+                                : "–",
+                        caption: "Average weekly wash frequency.",
+                    },
+                ];
+                container.innerHTML = heroCards
+                    .map(
+                        (card) => `
+                        <div class="kpi-card">
+                          <h3>${card.label}</h3>
+                          <strong>${card.value}</strong>
+                          <p>${card.caption}</p>
+                        </div>
+                      `,
+                    )
+                    .join("");
+                const sourceLinks = document.getElementById("source-links");
+                if (sourceLinks) {
+                    const chips = (DATA.meta.source_files || []).map((file) => {
+                        const href = relativePath(file.path);
+                        const label = `${file.label} (${file.size_mb} MB)`;
+                        if (href) {
+                            return `<a class="chip" href="${href}" download>${label}</a>`;
+                        }
+                        return `<span>${label}</span>`;
+                    });
+                    sourceLinks.innerHTML =
+                        chips.join("") ||
+                        "<span>Source files update when the pipeline runs.</span>";
+                }
+            }
+
+            function relativePath(fullPath) {
+                if (!fullPath) return null;
+                if (fullPath.includes("output/seekho/")) {
+                    return "../../" + fullPath.split("output/seekho/")[1];
+                }
+                if (fullPath.includes("output/&done/")) {
+                    return "../../../" + fullPath.split("output/&done/")[1];
+                }
+                return null;
+            }
+
+            function renderSegmentExplorer() {
+                const controls = document.getElementById("segment-controls");
+                const dimensions = [
+                    { key: "city_tier", label: "City tier" },
+                    { key: "bucket_income_annual", label: "Income bucket" },
+                    { key: "consumption_tier", label: "Consumption tier" },
+                    { key: "age_cohort", label: "Age cohort" },
+                    { key: "gender_identity", label: "Gender split" },
+                ];
+                controls.innerHTML = dimensions
+                    .map(
+                        (dim, index) => `
+                        <button class="chip ${index === 0 ? "active" : ""}" data-dimension="${dim.key}">
+                          ${dim.label}
+                        </button>
+                      `,
+                    )
+                    .join("");
+                controls.addEventListener("click", (event) => {
+                    if (event.target.dataset.dimension) {
+                        $$("#segment-controls .chip").forEach((btn) =>
+                            btn.classList.remove("active"),
+                        );
+                        event.target.classList.add("active");
+                        updateSegmentBars(event.target.dataset.dimension);
+                    }
+                });
+                updateSegmentBars(dimensions[0].key);
+
+                populatePersonaFilters();
+                renderPersonas();
+                [
+                    "persona-search",
+                    "persona-city",
+                    "persona-income",
+                    "persona-gender",
+                ].forEach((id) => {
+                    document
+                        .getElementById(id)
+                        .addEventListener("input", renderPersonas);
+                    document
+                        .getElementById(id)
+                        .addEventListener("change", renderPersonas);
+                });
+            }
+
+            function updateSegmentBars(dimension) {
+                const container = document.getElementById("segment-bars");
+                const entries = Object.entries(
+                    DATA.segments[dimension] || {},
+                ).sort((a, b) => b[1].count - a[1].count);
+                if (!entries.length) {
+                    container.innerHTML =
+                        "<p>Segment data not available for this view.</p>";
+                    return;
+                }
+                container.innerHTML = entries
+                    .map(([segment, info]) => {
+                        const label = formatSegmentLabel(dimension, segment);
+                        return `
+                        <div class="bar-row">
+                          <div class="bar-fill" style="width:${info.percent}%"></div>
+                          <div class="bar-label">
+                            <strong>${label}</strong>&nbsp;&nbsp;${formatPercent(info.percent)} (${formatNumber(info.count)})
+                          </div>
+                        </div>
+                      `;
+                    })
+                    .join("");
+            }
+
+            function populatePersonaFilters() {
+                const citySelect = document.getElementById("persona-city");
+                const incomeSelect = document.getElementById("persona-income");
+                const genderSelect = document.getElementById("persona-gender");
+                const buildOptions = (entries, label) =>
+                    [
+                        '<option value="">All ' + label + "</option>",
+                        ...entries.map(
+                            ([key]) => `<option value="${key}">${key}</option>`,
+                        ),
+                    ].join("");
+                citySelect.innerHTML = buildOptions(
+                    Object.entries(DATA.segments.city_tier),
+                    "city tiers",
+                );
+                incomeSelect.innerHTML = buildOptions(
+                    Object.entries(DATA.segments.bucket_income_annual),
+                    "income buckets",
+                );
+                const genderEntries = Object.entries(
+                    DATA.segments.gender_identity || {},
+                );
+                const fallbackGender = Object.entries(
+                    DATA.meta.gender_mix || {},
+                );
+                genderSelect.innerHTML = buildOptions(
+                    genderEntries.length ? genderEntries : fallbackGender,
+                    "genders",
+                );
+            }
+
+            function renderPersonas() {
+                const list = document.getElementById("persona-list");
+                const query = document
+                    .getElementById("persona-search")
+                    .value.toLowerCase();
+                const city = document.getElementById("persona-city").value;
+                const income = document.getElementById("persona-income").value;
+                const gender = document.getElementById("persona-gender").value;
+                const filtered = DATA.personas
+                    .filter((p) => {
+                        return (
+                            (!query ||
+                                (p.summary &&
+                                    p.summary.toLowerCase().includes(query))) &&
+                            (!city || p.city_tier === city) &&
+                            (!income || p.bucket_income_annual === income) &&
+                            (!gender ||
+                                (p.gender_identity || "").toLowerCase() ===
+                                    gender.toLowerCase())
+                        );
+                    })
+                    .slice(0, 24);
+                const cards = filtered
+                    .map((p) => {
+                        const metaLine = [
+                            capitalizeWords(p.gender_identity || ""),
+                            p.city_tier,
+                            p.bucket_income_annual,
+                            p.age_cohort,
+                        ]
+                            .filter(Boolean)
+                            .join(" · ");
+                        const detailRows = buildPersonaMetricRows(p);
+                        return `
+                        <div class="persona-card">
+                          <h4>${p.respondent_id}</h4>
+                          <small>${metaLine}</small>
+                          <p>${p.summary || "Summary not available."}</p>
+                          <ul>
+                            <li>Consumption tier: ${p.consumption_tier || "–"}</li>
+                            ${detailRows}
+                          </ul>
+                        </div>
+                      `;
+                    })
+                    .join("");
+                list.innerHTML =
+                    cards || "<p>No personas match the filters.</p>";
+            }
+
+            function formatMetric(value) {
+                return value === null || value === undefined
+                    ? "–"
+                    : value.toFixed(1).replace(/\\.0$/, "");
+            }
+
+            function buildPersonaMetricRows(persona) {
+                const metrics = persona.metrics || {};
+                const items = [
+                    {
+                        label: "Monthly spend",
+                        value: formatCurrency(
+                            metrics.pricing_monthly_spend_value,
+                        ),
+                    },
+                    {
+                        label: "Premium ceiling",
+                        value: formatCurrency(metrics.premium_price_band_value),
+                    },
+                    {
+                        label: "Refill triggers",
+                        value: formatMetric(
+                            metrics.pricing_refill_trigger_count,
+                        ),
+                    },
+                    {
+                        label: "Salon treatments",
+                        value: formatMetric(metrics.salon_treatment_count),
+                    },
+                    {
+                        label: "Intro offers liked",
+                        value: formatMetric(metrics.intro_offer_count),
+                    },
+                    {
+                        label: "Channel mix breadth",
+                        value: formatMetric(metrics.online_channel_mix_count),
+                    },
+                ]
+                    .filter((item) => item.value !== "–")
+                    .map(
+                        (item) =>
+                            `<li><strong>${item.label}:</strong> ${item.value}</li>`,
+                    )
+                    .join("");
+                return (
+                    items ||
+                    "<li><strong>Metrics:</strong> Not captured for this persona.</li>"
+                );
+            }
+
+            function renderQuestionNavigator() {
+                const list = document.getElementById("question-list");
+                const questions = Object.entries(DATA.questions).sort(
+                    (a, b) => a[1].meta.index - b[1].meta.index,
+                );
+                list.innerHTML = questions
+                    .map(
+                        ([qid, q]) => `
+                        <button data-qid="${qid}" class="${qid === questions[0][0] ? "active" : ""}">
+                          <strong>${qid.toUpperCase()}</strong><br />
+                          <small>${q.meta.tag || ""}</small>
+                        </button>
+                      `,
+                    )
+                    .join("");
+                list.addEventListener("click", (event) => {
+                    if (event.target.closest("button")) {
+                        const btn = event.target.closest("button");
+                        $$("#question-list button").forEach((b) =>
+                            b.classList.remove("active"),
+                        );
+                        btn.classList.add("active");
+                        updateQuestionView(btn.dataset.qid);
+                    }
+                });
+                const segmentSelect =
+                    document.getElementById("question-segment");
+                const segmentValueLabel = document.getElementById(
+                    "segment-value-label",
+                );
+                const segmentValueSelect = document.getElementById(
+                    "question-segment-value",
+                );
+                segmentSelect.addEventListener("change", () => {
+                    if (segmentSelect.value === "overall") {
+                        segmentValueLabel.style.display = "none";
+                    } else {
+                        segmentValueLabel.style.display = "inline-block";
+                        populateSegmentValues(
+                            segmentSelect.value,
+                            segmentValueSelect,
+                        );
+                    }
+                    const active = document.querySelector(
+                        "#question-list button.active",
+                    );
+                    updateQuestionView(active.dataset.qid);
+                });
+                segmentValueSelect.addEventListener("change", () => {
+                    const active = document.querySelector(
+                        "#question-list button.active",
+                    );
+                    updateQuestionView(active.dataset.qid);
+                });
+                populateSegmentValues("city_tier", segmentValueSelect);
+                updateQuestionView(questions[0][0]);
+            }
+
+            function populateSegmentValues(dimension, selectEl) {
+                const entries = Object.keys(DATA.segments[dimension] || {});
+                selectEl.innerHTML = entries
+                    .map((v) => `<option value="${v}">${v}</option>`)
+                    .join("");
+            }
+
+            function updateQuestionView(qid) {
+                const qData = DATA.questions[qid];
+                const metaEl = document.getElementById("question-meta");
+                metaEl.innerHTML = `
+                        <span>${qid.toUpperCase()}</span>
+                        <span>${qData.meta.type || "multi-select"} · ${qData.meta.topic || ""}</span>
+                        <span>${qData.meta.title}</span>
+                      `;
+                const dimension =
+                    document.getElementById("question-segment").value;
+                const segmentValue = document.getElementById(
+                    "question-segment-value",
+                ).value;
+                let series = qData.overall;
+                if (dimension !== "overall") {
+                    series =
+                        (qData.segments[dimension] || {})[segmentValue] || [];
+                }
+                const bars = document.getElementById("question-bars");
+                if (qid === "q34") {
+                    const hookDistribution = buildHookDistribution(
+                        series,
+                        qData.respondent_count,
+                    );
+                    const rows = hookDistribution
+                        .slice(0, 20)
+                        .map(
+                            (item) => `
+                        <div class="bar-row">
+                          <div class="bar-fill" style="width:${item.percent}%"></div>
+                          <div class="bar-label">${item.option} · ${item.percent.toFixed(
+                              1,
+                          )}% (${item.count})</div>
+                        </div>
+                      `,
+                        )
+                        .join("");
+                    bars.innerHTML =
+                        rows || "<p>No responses for this slice.</p>";
+                } else {
+                    const rows = series
+                        .slice(0, 8)
+                        .map(
+                            (item) => `
+                        <div class="bar-row">
+                          <div class="bar-fill" style="width:${item.percent}%"></div>
+                          <div class="bar-label">${item.option} · ${item.percent}% (${item.count})</div>
+                        </div>
+                      `,
+                        )
+                        .join("");
+                    bars.innerHTML =
+                        rows || "<p>No responses for this slice.</p>";
+                }
+                const footnote = document.getElementById("question-footnote");
+                footnote.textContent = `Respondent count captured in canonical dataset: ${formatNumber(qData.respondent_count)} (overall baseline used for share calculations).`;
+            }
+
+            function splitHookOption(option = "") {
+                if (!option) return [];
+                return option
+                    .split("|")
+                    .map((chunk) => chunk.split(" - "))
+                    .map((parts) => ({
+                        family: parts[0] ? capitalizeWords(parts[0]) : "",
+                        hook: parts[1]
+                            ? capitalizeWords(parts[1])
+                            : capitalizeWords(parts[0] || ""),
+                    }));
+            }
+
+            function buildHookDistribution(series, respondentCount) {
+                const registry = new Map();
+                const total = respondentCount || 0;
+                series.forEach((item) => {
+                    const tags = splitHookOption(item.option);
+                    tags.forEach((tag) => {
+                        const label = tag.hook || tag.family;
+                        if (!label) return;
+                        if (!registry.has(label)) {
+                            registry.set(label, {
+                                option: label,
+                                count: 0,
+                            });
+                        }
+                        registry.get(label).count += item.count || 0;
+                    });
+                });
+                return Array.from(registry.values())
+                    .map((entry) => ({
+                        option: entry.option,
+                        count: entry.count,
+                        percent: total > 0 ? (entry.count / total) * 100 : 0,
+                    }))
+                    .sort((a, b) => b.percent - a.percent);
+            }
+
+            function renderMetrics() {
+                const grid = document.getElementById("metric-grid");
+                const detail = document.getElementById("metric-detail");
+                grid.innerHTML = DATA.metrics
+                    .map(
+                        (metric, index) => `
+                        <div class="metric-card ${index === 0 ? "active" : ""}" data-metric="${metric.key}">
+                          <strong>${metric.label}</strong>
+                          <p>${metric.description}</p>
+                          <h3>${metric.average} ${metric.unit}</h3>
+                        </div>
+                      `,
+                    )
+                    .join("");
+                grid.addEventListener("click", (event) => {
+                    const card = event.target.closest(".metric-card");
+                    if (card) {
+                        $$("#metric-grid .metric-card").forEach((c) =>
+                            c.classList.remove("active"),
+                        );
+                        card.classList.add("active");
+                        const metric = DATA.metrics.find(
+                            (m) => m.key === card.dataset.metric,
+                        );
+                        const formatLeaders = (items) =>
+                            items
+                                .map(
+                                    (item) =>
+                                        `${item.segment}: ${item.value.toFixed(
+                                            2,
+                                        )} ${metric.unit}`,
+                                )
+                                .join(", ");
+                        const bullets = [];
+                        if (metric.top_city_tiers?.length) {
+                            bullets.push(
+                                `<li><strong>City tiers:</strong> ${formatLeaders(
+                                    metric.top_city_tiers,
+                                )}</li>`,
+                            );
+                        }
+                        if (metric.top_income_buckets?.length) {
+                            bullets.push(
+                                `<li><strong>Income buckets:</strong> ${formatLeaders(
+                                    metric.top_income_buckets,
+                                )}</li>`,
+                            );
+                        }
+                        if (metric.top_consumption_tiers?.length) {
+                            bullets.push(
+                                `<li><strong>Consumption tiers:</strong> ${formatLeaders(
+                                    metric.top_consumption_tiers,
+                                )}</li>`,
+                            );
+                        }
+                        detail.innerHTML = `
+                            <h3>${metric.label}</h3>
+                            <p>${metric.description}</p>
+                            ${
+                                metric.insight
+                                    ? `<p><em>${metric.insight}</em></p>`
+                                    : ""
+                            }
+                            <p><strong>Overall average:</strong> ${
+                                metric.average
+                            } ${metric.unit}${
+                                metric.min !== null && metric.max !== null
+                                    ? ` (range ${metric.min}–${metric.max})`
+                                    : ""
+                            }</p>
+                            <ul>
+                              ${bullets.join("")}
+                            </ul>
+                          `;
+                    }
+                });
+                grid.querySelector(".metric-card")?.click();
+            }
+
+            function renderInsights() {
+                const tabs = document.getElementById("insight-tabs");
+                const cards = document.getElementById("insight-cards");
+                if (!tabs || !cards) return;
+                const structuredInsights = DATA.insight_sections || [];
+                if (structuredInsights.length) {
+                    tabs.innerHTML = structuredInsights
+                        .map(
+                            (section, index) => `
+                        <button class="chip ${index === 0 ? "active" : ""}" data-section="${index}">
+                          ${section.title}
+                        </button>
+                      `,
+                        )
+                        .join("");
+                    const renderSection = (index) => {
+                        const section = structuredInsights[index];
+                        if (!section) {
+                            cards.innerHTML = "<p>No insights available.</p>";
+                            return;
+                        }
+                        const bullets = (section.bullets || [])
+                            .map((line) => `<li>${stripReferences(line)}</li>`)
+                            .join("");
+                        cards.innerHTML = `
+                            <div class="insight-card">
+                              <h4>${section.title}</h4>
+                              ${
+                                  bullets
+                                      ? `<ul>${bullets}</ul>`
+                                      : "<p>No quantitative highlights logged yet.</p>"
+                              }
+                              ${
+                                  section.why
+                                      ? `<p><strong>Why it matters:</strong> ${stripReferences(section.why)}</p>`
+                                      : ""
+                              }
+                              ${
+                                  section.action
+                                      ? `<p><strong>Action cue:</strong> ${stripReferences(section.action)}</p>`
+                                      : ""
+                              }
+                            </div>
+                          `;
+                    };
+                    tabs.addEventListener("click", (event) => {
+                        const btn = event.target.closest(
+                            "button[data-section]",
+                        );
+                        if (!btn) return;
+                        $$("#insight-tabs .chip").forEach((chip) =>
+                            chip.classList.remove("active"),
+                        );
+                        btn.classList.add("active");
+                        renderSection(Number(btn.dataset.section));
+                    });
+                    renderSection(0);
+                    return;
+                }
+
+                const legacyInsights = DATA.insights || [];
+                const groups = [
+                    ...new Set(legacyInsights.map((item) => item.group)),
+                ];
+                if (!groups.length) {
+                    tabs.innerHTML = "";
+                    cards.innerHTML =
+                        "<p>No insight cards available. Refresh the analysis bundle.</p>";
+                    return;
+                }
+                tabs.innerHTML = groups
+                    .map(
+                        (group, index) => `
+                        <button class="chip ${index === 0 ? "active" : ""}" data-group="${group}">${group}</button>
+                      `,
+                    )
+                    .join("");
+                const renderLegacy = (group) => {
+                    const subset = legacyInsights.filter(
+                        (item) => item.group === group,
+                    );
+                    if (!subset.length) {
+                        cards.innerHTML =
+                            "<p>No cards available for this tab.</p>";
+                        return;
+                    }
+                    cards.innerHTML = subset
+                        .map((item) => {
+                            const evidence = humaniseEvidence(item.evidence);
+                            const recommendation = stripReferences(
+                                item.recommendation ||
+                                    "Add a recommendation in insight_matrix.json",
+                            );
+                            const execution = stripReferences(
+                                item.example_execution ||
+                                    "Outline a sample activation in the JSON to surface it here.",
+                            );
+                            return `
+                          <div class="insight-card">
+                            <h4>${item.segment_label || item.segment_key}</h4>
+                            <p><strong>Evidence:</strong> ${evidence}</p>
+                            <p><strong>Recommendation:</strong> ${recommendation}</p>
+                            <p><strong>Execution:</strong> ${execution}</p>
+                          </div>
+                        `;
+                        })
+                        .join("");
+                };
+                tabs.addEventListener("click", (event) => {
+                    const btn = event.target.closest("button[data-group]");
+                    if (!btn) return;
+                    $$("#insight-tabs .chip").forEach((chip) =>
+                        chip.classList.remove("active"),
+                    );
+                    btn.classList.add("active");
+                    renderLegacy(btn.dataset.group);
+                });
+                renderLegacy(groups[0]);
+            }
+
+            function humaniseEvidence(raw) {
+                if (!raw) return "Not logged.";
+                let parsed = raw;
+                if (typeof raw === "string") {
+                    const trimmed = raw.trim();
+                    if (!trimmed) return "Not logged.";
+                    try {
+                        parsed = JSON.parse(trimmed);
+                    } catch (err) {
+                        return stripReferences(trimmed);
+                    }
+                }
+                if (Array.isArray(parsed)) {
+                    return `
+                        <ul>
+                          ${parsed
+                              .slice(0, 5)
+                              .map(
+                                  (entry) =>
+                                      `<li>${formatEvidenceEntry(entry)}</li>`,
+                              )
+                              .join("")}
+                        </ul>
+                      `;
+                }
+                if (typeof parsed === "object") {
+                    return stripReferences(JSON.stringify(parsed));
+                }
+                return stripReferences(String(parsed));
+            }
+
+            function formatEvidenceEntry(entry) {
+                if (typeof entry !== "object" || entry === null) {
+                    return stripReferences(String(entry));
+                }
+                const parts = [];
+                [
+                    "city_tier",
+                    "consumption_tier",
+                    "hair_type",
+                    "scalp_type",
+                    "top_concern",
+                    "option",
+                    "offer",
+                    "channel",
+                ].forEach((key) => {
+                    if (entry[key]) {
+                        parts.push(
+                            capitalizeWords(
+                                String(entry[key]).replace(/_/g, " "),
+                            ),
+                        );
+                    }
+                });
+                if (entry.count !== undefined && entry.city_total) {
+                    parts.push(`${entry.count}/${entry.city_total}`);
+                } else if (entry.count !== undefined) {
+                    parts.push(`${entry.count}`);
+                }
+                if (entry.share !== undefined) {
+                    const share =
+                        entry.share <= 1 ? entry.share * 100 : entry.share;
+                    parts.push(`${share.toFixed(1)}%`);
+                }
+                return (
+                    parts.join(" · ") || stripReferences(JSON.stringify(entry))
+                );
+            }
+
+            function renderStats() {
+                const statContent = document.getElementById("stat-content");
+                const buttons = document.querySelectorAll(".stat-tabs .chip");
+                const render = (type) => {
+                    const sections =
+                        type === "chi" ? DATA.chi_square : DATA.anova;
+                    statContent.innerHTML = buildStatCards(sections);
+                };
+                buttons.forEach((btn) => {
+                    btn.addEventListener("click", () => {
+                        buttons.forEach((b) => b.classList.remove("active"));
+                        btn.classList.add("active");
+                        render(btn.dataset.stat);
+                    });
+                });
+                render("chi");
+            }
+
+            function buildStatCards(sections = []) {
+                if (!sections.length) {
+                    return "<p>No statistical highlights available.</p>";
+                }
+                const cards = sections
+                    .map((section) => {
+                        const bullets = (section.bullets || [])
+                            .map(
+                                (line) =>
+                                    `<li>${inlineMarkdown(
+                                        stripReferences(line),
+                                    )}</li>`,
+                            )
+                            .join("");
+                        const actions = (section.actions || [])
+                            .map(
+                                (line) =>
+                                    `<li>${inlineMarkdown(
+                                        stripReferences(line),
+                                    )}</li>`,
+                            )
+                            .join("");
+                        return `
+                            <div class="stat-card">
+                              <h4>${section.title}</h4>
+                              ${
+                                  bullets
+                                      ? `<ul>${bullets}</ul>`
+                                      : "<p>No metric differences logged.</p>"
+                              }
+                              ${
+                                  actions
+                                      ? `<div class="stat-card-actions"><strong>Use it:</strong><ul>${actions}</ul></div>`
+                                      : ""
+                              }
+                            </div>
+                          `;
+                    })
+                    .join("");
+                return `<div class="stat-cards">${cards}</div>`;
+            }
+
+            function renderVisualGallery() {
+                const tabs = document.getElementById("visual-tabs");
+                const grid = document.getElementById("visual-grid");
+                if (!tabs || !grid) return;
+                const visuals = DATA.visual_gallery || [];
+                if (!visuals.length) {
+                    tabs.innerHTML = "";
+                    grid.innerHTML = "<p>No heatmaps available.</p>";
+                    return;
+                }
+                tabs.innerHTML = visuals
+                    .map(
+                        (item, idx) => `
+                        <button class="chip ${idx === 0 ? "active" : ""}" data-visual="${idx}">
+                          ${item.title}
+                        </button>
+                      `,
+                    )
+                    .join("");
+                const renderCard = (index) => {
+                    const item = visuals[index];
+                    if (!item) return;
+                    grid.innerHTML = buildVisualCard(item);
+                };
+                tabs.addEventListener("click", (event) => {
+                    const btn = event.target.closest("button[data-visual]");
+                    if (!btn) return;
+                    $$("#visual-tabs .chip").forEach((chip) =>
+                        chip.classList.remove("active"),
+                    );
+                    btn.classList.add("active");
+                    renderCard(Number(btn.dataset.visual));
+                });
+                renderCard(0);
+            }
+
+            function buildVisualCard(item) {
+                const columns = item.columns || [];
+                const rows = (item.rows || [])
+                    .map((row) => {
+                        const numericValues = columns
+                            .map((col) => row.values[col])
+                            .filter((val) => typeof val === "number");
+                        const rowMax =
+                            numericValues.length > 0
+                                ? Math.max(...numericValues.map(Math.abs))
+                                : 0;
+                        const bars = columns
+                            .map((col) => {
+                                const friendly = formatHeatmapColumnLabel(col);
+                                const val = row.values[col];
+                                const display =
+                                    typeof val === "number"
+                                        ? `${val.toFixed(1)}%`
+                                        : "–";
+                                const width =
+                                    typeof val === "number" && rowMax > 0
+                                        ? Math.min(
+                                              100,
+                                              Math.max(
+                                                  0,
+                                                  (Math.abs(val) / rowMax) *
+                                                      100,
+                                              ),
+                                          )
+                                        : 0;
+                                return `
+                                        <div class="heatmap-bar" style="--value:${width}%">
+                                          <span class="heatmap-bar-label">${friendly}: ${display}</span>
+                                        </div>
+                                      `;
+                            })
+                            .join("");
+                        return `
+                                <div class="heatmap-row">
+                                  <div class="heatmap-row-label">${formatHeatmapRowLabel(
+                                      row.label,
+                                  )}</div>
+                                  <div class="heatmap-bars">${bars}</div>
+                                </div>
+                              `;
+                    })
+                    .join("");
+                return `
+                    <div class="visual-card">
+                      <h4>${item.title}</h4>
+                      <p>${item.description}</p>
+                      <div class="visual-card-content">
+                        ${rows || "<p>No data available.</p>"}
+                      </div>
+                    </div>
+                  `;
+            }
+
+            function renderPlaybooks() {
+                const tabs = document.getElementById("playbook-tabs");
+                const view = document.getElementById("playbook-view");
+                const playbooks = DATA.playbooks || [];
+                if (!playbooks.length) {
+                    if (tabs) tabs.innerHTML = "";
+                    if (view)
+                        view.innerHTML = "<p>No playbooks available yet.</p>";
+                    return;
+                }
+                if (tabs) {
+                    tabs.innerHTML = playbooks
+                        .map(
+                            (pb, idx) => `
+                        <button class="chip ${idx === 0 ? "active" : ""}" data-playbook="${idx}">
+                          ${pb.title || pb.name}
+                        </button>
+                      `,
+                        )
+                        .join("");
+                    tabs.addEventListener("click", (event) => {
+                        const btn = event.target.closest(
+                            "button[data-playbook]",
+                        );
+                        if (!btn) return;
+                        $$("#playbook-tabs .chip").forEach((chip) =>
+                            chip.classList.remove("active"),
+                        );
+                        btn.classList.add("active");
+                        renderPlaybookView(
+                            playbooks[Number(btn.dataset.playbook)],
+                            view,
+                        );
+                    });
+                }
+                renderPlaybookView(playbooks[0], view);
+            }
+
+            function renderPlaybookView(playbook, container) {
+                if (!container) return;
+                if (!playbook) {
+                    container.innerHTML =
+                        "<p>Select a playbook to view the plan.</p>";
+                    return;
+                }
+                const cues = (playbook.stat_cues || [])
+                    .map((cue) => `<li>${stripReferences(cue)}</li>`)
+                    .join("");
+                const summaryCard = `
+                    <div class="playbook-summary-card">
+                      <h3>${playbook.title || playbook.name}</h3>
+                    </div>
+                  `;
+                const segments = (playbook.segments || [])
+                    .map((segment) => buildPlaybookSegmentCard(segment))
+                    .join("");
+                const segmentsGrid =
+                    segments ||
+                    "<p>No segment-level activations captured yet.</p>";
+                container.innerHTML = `
+                    ${summaryCard}
+                    <div class="playbook-segments">
+                      ${segmentsGrid}
+                    </div>
+                  `;
+            }
+
+            const PLAYBOOK_META_FIELDS = [
+                "city",
+                "city_tier",
+                "income",
+                "bucket_income_annual",
+                "consumption",
+                "consumption_tier",
+                "sample",
+                "sample_size",
+            ];
+
+            const PLAYBOOK_GROUPS = [
+                {
+                    title: "Audience & Context",
+                    keys: [
+                        "persona_weights",
+                        "cluster_focus",
+                        "primary_language",
+                        "language_stack",
+                        "cultural_importance",
+                        "low_bandwidth_needs",
+                        "feedback_themes",
+                    ],
+                },
+                {
+                    title: "Advocates & Channels",
+                    keys: [
+                        "advocates",
+                        "ad_tone",
+                        "channels",
+                        "messages",
+                        "trial_triggers",
+                        "payment_methods",
+                    ],
+                },
+                {
+                    title: "Activation Concepts",
+                    keys: [
+                        "insight",
+                        "localisation_plan",
+                        "offer_outline",
+                        "primary_concept",
+                        "variant_concept",
+                        "copy_placeholder",
+                        "test_ideas",
+                    ],
+                },
+                {
+                    title: "Metrics & Guardrails",
+                    keys: [
+                        "success_metric",
+                        "monetisation_score",
+                        "cadence",
+                        "willingness_to_pay",
+                        "plan_preferences",
+                    ],
+                },
+            ];
+
+            function buildPlaybookSegmentCard(segment) {
+                const fields = segment.fields || {};
+                const labels = segment.labels || {};
+                const metaParts = [];
+                if (fields.city) metaParts.push(fields.city);
+                if (fields.city_tier && !metaParts.includes(fields.city_tier)) {
+                    metaParts.push(fields.city_tier);
+                }
+                if (fields.income) metaParts.push(fields.income);
+                if (
+                    fields.bucket_income_annual &&
+                    !metaParts.includes(fields.bucket_income_annual)
+                ) {
+                    metaParts.push(fields.bucket_income_annual);
+                }
+                if (fields.consumption) metaParts.push(fields.consumption);
+                if (
+                    fields.consumption_tier &&
+                    !metaParts.includes(fields.consumption_tier)
+                ) {
+                    metaParts.push(fields.consumption_tier);
+                }
+                const sample = fields.sample || fields.sample_size;
+                const metaLine = metaParts.join(" · ");
+                const insightValue = stripReferences(fields.insight || "");
+                const groupHtml = PLAYBOOK_GROUPS.map((group) =>
+                    renderPlaybookFieldGroup(segment, group.keys, group.title),
+                )
+                    .filter(Boolean)
+                    .join("");
+                const usedKeys = new Set([
+                    ...PLAYBOOK_META_FIELDS,
+                    ...PLAYBOOK_GROUPS.flatMap((group) => group.keys),
+                ]);
+                const otherKeys = Object.keys(fields).filter(
+                    (key) => fields[key] && !usedKeys.has(key),
+                );
+                const otherGroup = otherKeys.length
+                    ? renderPlaybookFieldGroup(
+                          segment,
+                          otherKeys,
+                          "Additional Notes",
+                      )
+                    : "";
+                return `
+                    <div class="playbook-segment-card">
+                      ${
+                          metaLine || sample
+                              ? `<div class="playbook-meta">${metaLine || ""}${
+                                    sample ? ` · n=${sample}` : ""
+                                }</div>`
+                              : ""
+                      }
+                      ${
+                          insightValue
+                              ? `<p class="playbook-insight">${insightValue}</p>`
+                              : ""
+                      }
+                      <div class="playbook-field-groups">
+                        ${groupHtml || "<p>No levers logged for this segment.</p>"}
+                        ${otherGroup}
+                      </div>
+                    </div>
+                  `;
+            }
+
+            function renderPlaybookFieldGroup(segment, keys, title) {
+                const fields = segment.fields || {};
+                const labels = segment.labels || {};
+                const rows = keys
+                    .map((key) => {
+                        const value = stripReferences(fields[key] || "");
+                        if (!value) return "";
+                        const label = labels[key] || formatPlaybookLabel(key);
+                        return `<div class="playbook-field-row"><strong>${label}</strong><span>${value}</span></div>`;
+                    })
+                    .filter(Boolean)
+                    .join("");
+                if (!rows) return "";
+                return `<div class="playbook-field-group"><h5>${title}</h5>${rows}</div>`;
+            }
+
+            function formatPlaybookLabel(key) {
+                return key
+                    .split("_")
+                    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+                    .join(" ");
+            }
+
+            function init() {
+                renderHero();
+                renderSegmentExplorer();
+                renderQuestionNavigator();
+                renderMetrics();
+                renderInsights();
+                renderStats();
+                renderVisualGallery();
+                renderPlaybooks();
+            }
+
+            document.addEventListener("DOMContentLoaded", init);
+        </script>
+    </body>
+</html>
